@@ -1,0 +1,14 @@
+/Library/
+/Temp/
+/obj/
+*.exp
+*.exp.meta
+*.lib
+*.lib.meta
+*.pdb
+*.pdb.meta
+*.ilk
+*.ilk.meta
+*.csproj
+*.sln
+*.suo

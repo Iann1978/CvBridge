@@ -83,9 +83,9 @@ namespace cvBridge
 
 
 		//mat0.copyTo(mat16);
-		addWeighted(mat0, 0.5, mat1, 0.5, 0, mat16);
-		addWeighted(mat16, 0.5, mat2, 0.5, 0, mat16);
-		addWeighted(mat16, 0.5, mat3, 0.5, 0, mat16);
+		addWeighted(mat0, 1, mat1, 1, 0, mat16);
+		addWeighted(mat16, 1, mat2, 1, 0, mat16);
+		addWeighted(mat16, 1, mat3, 1, 0, mat16);
 
 
 	}

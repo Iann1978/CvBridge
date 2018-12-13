@@ -10,6 +10,9 @@
 #include <opencv2/opencv.hpp>
 #include "CVProcess.h"
 
+#include "Demos/CVProcess_AVM.h"
+#include "Demos/CVProcess_Calibration.h"
+
 using namespace cv;
 using namespace cvBridge;
 
@@ -22,10 +25,15 @@ static UnityGfxRenderer s_DeviceType = kUnityGfxRendererNull;
 
 extern "C" void	UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnityInterfaces* unityInterfaces)
 {
+	// Initialize CVProcess
+	memset(CVProcess::cvProcs, sizeof(CVProcess *) * 32, 0);
+	CVProcess::cvProcs[0] = (CVProcess *)new CVProcess_AVM();
+	CVProcess::cvProcs[1] = (CVProcess *)new CVProcess_Calibration();
+	
+
 	s_UnityInterfaces = unityInterfaces;
 	s_Graphics = s_UnityInterfaces->Get<IUnityGraphics>();
 	s_Graphics->RegisterDeviceEventCallback(OnGraphicsDeviceEvent);
-	memset(CVProcess::cvTextures, sizeof(CVTexture*) * 32, 0);
 	// Run OnGraphicsDeviceEvent(initialize) manually on plugin load
 	OnGraphicsDeviceEvent(kUnityGfxDeviceEventInitialize);
 }
@@ -76,43 +84,51 @@ static void UNITY_INTERFACE_API OnRenderEvent(int eventID)
 {
 	if (eventID == 1)
 	{
-		// Convert CVTexture to cv::Mat
+	
+
+		// deal cv process
 		for (int i = 0; i < 32; i++)
 		{
-			CVTexture* texture = CVProcess::cvTextures[i];
-			if (texture)
-			{	
-				RenderDevice::ins->Texture2Mat(texture);
-			}
-		}
-
-		// Process cv::Mat
-		CVProcess CVProcess;
-		CVProcess.Process(nullptr, nullptr);
-
-		// Convert cv::Mat to CVTexture
-		for (int i = 16; i < 32; i++)
-		{
-			if (CVProcess::cvTextures[i])
+			CVProcess *cvProc = CVProcess::cvProcs[i];
+			if (cvProc)
 			{
-				RenderDevice::ins->Mat2Texture(CVProcess::cvTextures[i]);
-			}
-		}
-
-		// Release resources
-		for (int i = 0; i < 32; i++)
-		{
-			if (CVProcess::cvTextures[i])
-			{
-				if (CVProcess::cvTextures[i]->mat)
+				// Convert CVTexture to cv::Mat
+				for (int i = 0; i < 32; i++)
 				{
-					delete CVProcess::cvTextures[i]->mat;
-					CVProcess::cvTextures[i]->mat = nullptr;
+					CVTexture* texture = cvProc->cvTextures[i];
+					if (texture)
+					{
+						RenderDevice::ins->Texture2Mat(texture);
+					}
+				}
+
+				cvProc->Process(nullptr, nullptr);
+
+
+				// Convert cv::Mat to CVTexture
+				for (int i = 16; i < 32; i++)
+				{
+					if (cvProc->cvTextures[i])
+					{
+						RenderDevice::ins->Mat2Texture(cvProc->cvTextures[i]);
+					}
+				}
+
+				// Release resources
+				for (int i = 0; i < 32; i++)
+				{
+					if (cvProc->cvTextures[i])
+					{
+						if (cvProc->cvTextures[i]->mat)
+						{
+							delete cvProc->cvTextures[i]->mat;
+							cvProc->cvTextures[i]->mat = nullptr;
+						}
+					}
 				}
 			}
 		}
 	}
-	
 
 	return;
 

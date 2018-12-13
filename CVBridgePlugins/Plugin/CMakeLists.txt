@@ -17,14 +17,22 @@ file(GLOB_RECURSE SRC_CVBRIDGE
     "./CVBridge/*.h"
 )
 
+
+file(GLOB_RECURSE SRC_DEMOS
+    "./Demos/*.cpp"
+    "./Demos/*.h"
+)
+
 source_group("Unity"            FILES ${SRC_UNITY})
 source_group("GLEW"            FILES ${SRC_GLEW})
 source_group("CVBridge"            FILES ${SRC_CVBRIDGE})
+source_group("Demos"            FILES ${SRC_DEMOS})
 
 set(SOURCES
 	${SRC_UNITY}
 	${SRC_GLEW}
-	${SRC_CVBRIDGE})
+	${SRC_CVBRIDGE}
+	${SRC_DEMOS})
 
 # include directores
 include_directories(.)

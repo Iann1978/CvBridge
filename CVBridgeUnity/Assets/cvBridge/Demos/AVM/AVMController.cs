@@ -184,10 +184,10 @@ public class AVMController : MonoBehaviour
     void Awake()
     {
 
-        CVBridge.SetInteger(0, (int)w);
-        CVBridge.SetInteger(1, (int)h);
-        CVBridge.SetInteger(2, (int)wext);
-        CVBridge.SetInteger(3, (int)hext);
+        CVBridge.SetInteger(0, 0, (int)w);
+        CVBridge.SetInteger(0, 1, (int)h);
+        CVBridge.SetInteger(0, 2, (int)wext);
+        CVBridge.SetInteger(0, 3, (int)hext);
         //CvBridgeDll.SetInteger(4, (int)Wt);
         //CvBridgeDll.SetInteger(5, (int)Ht);
     }

@@ -12,10 +12,17 @@ namespace cvBridge
         public static extern int GetVersion();
 
         [DllImport("CVBridge")]
-        public static extern void SetCVTexture(int index, int width, int height, int tex);
+        public static extern int GetMajorVersion();
 
         [DllImport("CVBridge")]
-        public static extern void SetInteger(int index, int value);
+        public static extern int GetSubVersion();
+
+
+        [DllImport("CVBridge")]
+        public static extern void SetCVTexture(int procIdx, int texIndex, int width, int height, int texture);
+
+        [DllImport("CVBridge")]
+        public static extern void SetInteger(int procIdx, int intIndex, int value);
 
         [DllImport("CVBridge")]
         public static extern IntPtr GetRenderEventFunc();

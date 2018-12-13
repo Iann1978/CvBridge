@@ -7,6 +7,7 @@ namespace cvBridge
     [RequireComponent(typeof(Camera))]
     public class CVRenderTexture : MonoBehaviour
     {
+        public int cvProcIndex = 0;
         public int cvTexIndex = 0;
         public int width = 512;
         public int height = 512;
@@ -19,7 +20,7 @@ namespace cvBridge
             rtx.Create();
             Camera camera = GetComponent<Camera>();
             camera.targetTexture = rtx;
-            CVBridge.SetCVTexture(cvTexIndex, width, height, rtx.GetNativeTexturePtr().ToInt32());
+            CVBridge.SetCVTexture(cvProcIndex, cvTexIndex, width, height, rtx.GetNativeTexturePtr().ToInt32());
         }
     }
 }

@@ -8,11 +8,15 @@ namespace cvBridge
 	class CVProcess
 	{
 	public:
-		static int intValues[32];
-		static CVTexture*	cvTextures[32];
-	public:
-		virtual void Process(Mat** inputs, Mat** outputs);
+		static CVProcess* cvProcs[32];
+		int			intValues[32];
+		CVTexture*	cvTextures[32];
 
+	public:
+		CVProcess();
+
+	public:
+		virtual void Process(Mat** inputs, Mat** outputs) = 0;
 	};
 }
 

@@ -7,6 +7,7 @@ namespace cvBridge
     {
 
         public bool createOnWake = true;
+        public int cvProcIndex = 0;
         public int cvTexIndex = 1;
         public Texture2D texture;
         [Header("The size of the texture can be max to (2048x2048)")]
@@ -17,7 +18,7 @@ namespace cvBridge
         private void Awake()
         {
             texture = new Texture2D(width, height, TextureFormat.ARGB32, false);
-            CVBridge.SetCVTexture(cvTexIndex, width, height, texture.GetNativeTexturePtr().ToInt32());
+            CVBridge.SetCVTexture(cvProcIndex, cvTexIndex, width, height, texture.GetNativeTexturePtr().ToInt32());
             GetComponent<Renderer>().material.mainTexture = texture;
         }
     }

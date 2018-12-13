@@ -28,12 +28,15 @@ set(SOURCES
 
 # include directores
 include_directories(.)
+include_directories(${CMAKE_SOURCE_DIR}/../3rdparty/opencv-3.4.4-vc14_vc15/build/include)
+
+link_directories(${CMAKE_SOURCE_DIR}/../3rdparty/opencv-3.4.4-vc14_vc15/build/x64/vc15/lib)
 
 # predefined macro
-ADD_DEFINITIONS(-DGLEW_STATIC)
+add_definitions(-DGLEW_STATIC)
 
 # add libs
-LINK_LIBRARIES("E:/test/opencv/opencv/build/x64/vc15/lib/opencv_world341d.lib" "opengl32.lib")
+link_libraries(opencv_world344d.lib opengl32.lib)
 
 
 # add the project

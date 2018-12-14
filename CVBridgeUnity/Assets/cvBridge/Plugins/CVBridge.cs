@@ -17,6 +17,8 @@ namespace cvBridge
         [DllImport("CVBridge")]
         public static extern int GetSubVersion();
 
+        [DllImport("CVBridge")]
+        public static extern void SetCVProcess(int procIdx, IntPtr cvProcess);
 
         [DllImport("CVBridge")]
         public static extern void SetCVTexture(int procIdx, int texIndex, int width, int height, int texture);

@@ -10,9 +10,5 @@ namespace cvBridge
 	using namespace std;
 
 	CVProcess* CVProcess::cvProcs[32];
-	CVProcess::CVProcess()
-	{
-		memset(cvTextures, sizeof(CVTexture*) * 32, 0);
-		memset(intValues, sizeof(int*) * 32, 0);
-	}
+	
 }

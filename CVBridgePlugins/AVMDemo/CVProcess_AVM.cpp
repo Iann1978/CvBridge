@@ -4,6 +4,13 @@
 #include "CVBridge/CVProcess.h"
 #include "CVBridge/CVTexture.h"
 #include "CVProcess_AVM.h"
+extern "C" 
+{
+	__declspec(dllexport) CVProcess* GetCVProcess()
+	{
+		return (CVProcess * )new CVProcess_AVM();
+	}
+}
 
 void CVProcess_AVM::Process(Mat** inputs, Mat** outputs)
 {

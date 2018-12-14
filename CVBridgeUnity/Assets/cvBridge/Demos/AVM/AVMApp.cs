@@ -2,12 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using cvBridge;
+using System.Runtime.InteropServices;
+using System;
 
 public class AVMApp : MonoBehaviour {
 
+    [DllImport("AVMDemo")]
+    public static extern IntPtr GetCVProcess();
+
+    private void Awake()
+    {
+        IntPtr cvProcess = GetCVProcess();
+        CVBridge.SetCVProcess(0, cvProcess);
+    }
 
     private void Start()
     {
+        
         StartCoroutine(CallPluginAtEndOfFrames());
     }
     

@@ -10,8 +10,7 @@
 #include <opencv2/opencv.hpp>
 #include "CVProcess.h"
 
-#include "Demos/CVProcess_AVM.h"
-#include "Demos/CVProcess_Calibration.h"
+
 
 using namespace cv;
 using namespace cvBridge;
@@ -27,8 +26,8 @@ extern "C" void	UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API UnityPluginLoad(IUnit
 {
 	// Initialize CVProcess
 	memset(CVProcess::cvProcs, sizeof(CVProcess *) * 32, 0);
-	CVProcess::cvProcs[0] = (CVProcess *)new CVProcess_AVM();
-	CVProcess::cvProcs[1] = (CVProcess *)new CVProcess_Calibration();
+	//CVProcess::cvProcs[0] = (CVProcess *)new CVProcess_AVM();
+	//CVProcess::cvProcs[1] = (CVProcess *)new CVProcess_Calibration();
 	
 
 	s_UnityInterfaces = unityInterfaces;

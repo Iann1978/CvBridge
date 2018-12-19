@@ -10,13 +10,15 @@ namespace cvBridge
 	public:
 		static CVProcess* cvProcs[32];
 		int			intValues[32];
+		float		floatValues[32];
 		CVTexture*	cvTextures[32];
 
 	public:
 		inline CVProcess()
 		{
 			memset(cvTextures, sizeof(CVTexture*) * 32, 0);
-			memset(intValues, sizeof(int*) * 32, 0);
+			memset(intValues, sizeof(int) * 32, 0);
+			memset(intValues, sizeof(float) * 32, 0);
 		}
 
 	public:

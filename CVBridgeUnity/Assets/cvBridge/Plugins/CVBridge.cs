@@ -27,6 +27,15 @@ namespace cvBridge
         public static extern void SetInteger(int procIdx, int intIndex, int value);
 
         [DllImport("CVBridge")]
+        public static extern int GetInteger(int procIdx, int intIndex);
+
+        [DllImport("CVBridge")]
+        public static extern void SetFloat(int procIdx, int floatIndex, float value);
+
+        [DllImport("CVBridge")]
+        public static extern float GetFloat(int procIdx, int floatIndex);
+
+        [DllImport("CVBridge")]
         public static extern IntPtr GetRenderEventFunc();
     }
 }

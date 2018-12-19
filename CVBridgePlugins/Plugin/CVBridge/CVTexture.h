@@ -1,5 +1,5 @@
 #pragma once
-#include "E:/githome/CvBridge/CVBridgePlugins/Plugin/GLEW/glew.h"
+#include "GLEW/glew.h"
 #include <opencv2/opencv.hpp>
 
 namespace cvBridge

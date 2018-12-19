@@ -1,6 +1,6 @@
 #pragma once 
 
-#include "E:/githome/CvBridge/CVBridgePlugins/Plugin/CVBridge/CVProcess.h"
+#include "CVBridge/CVProcess.h"
 
 using namespace cvBridge;
 

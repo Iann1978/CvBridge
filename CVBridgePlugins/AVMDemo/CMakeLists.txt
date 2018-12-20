@@ -18,14 +18,15 @@ set(SOURCES
 # include directores
 include_directories(.)
 include_directories(${CMAKE_SOURCE_DIR}/Plugin)
-include_directories(${CMAKE_SOURCE_DIR}/../3rdparty/opencv-3.4.4-vc14_vc15/build/include)
+include_directories(E:/git/opencv/opencv3_4/build/include)
 
-link_directories(${CMAKE_SOURCE_DIR}/../3rdparty/opencv-3.4.4-vc14_vc15/build/x64/vc15/lib)
+link_directories(E:/githome/opencv/opencv3_4/build/lib/Debug)
+
 link_directories(${CMAKE_BINARY_DIR}/Plugin/Debug)
 
 
 # add libs
-link_libraries(opencv_world344d.lib opengl32.lib CVBridgePlugin.lib)
+link_libraries(${OPENCV_LIB} opengl32.lib CVBridgePlugin.lib)
 
 
 # add the project

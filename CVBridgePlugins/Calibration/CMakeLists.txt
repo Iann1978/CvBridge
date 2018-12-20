@@ -18,7 +18,7 @@ set(SOURCES
 # include directores
 include_directories(.)
 include_directories(${CMAKE_SOURCE_DIR}/Plugin)
-include_directories(E:/git/opencv/opencv3_4/build/include)
+include_directories(${OPENCV_INCLUDE})
 
 link_directories(E:/githome/opencv/opencv3_4/build/lib/Debug)
 link_directories(${CMAKE_BINARY_DIR}/Plugin/Debug)

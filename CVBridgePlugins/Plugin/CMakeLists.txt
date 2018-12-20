@@ -36,7 +36,7 @@ set(SOURCES
 
 # include directores
 include_directories(.)
-include_directories(E:/git/opencv/opencv3_4/build/include)
+include_directories(${OPENCV_INCLUDE})
 
 link_directories(E:/githome/opencv/opencv3_4/build/lib/Debug)
 

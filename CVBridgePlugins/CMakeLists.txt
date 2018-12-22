@@ -1,5 +1,8 @@
 cmake_minimum_required (VERSION 2.6)
 
+set(OPENCV_FOLDER E:/githome/opencv/opencv3)
+set(OPENCV_EXTRA_MODULE_FOLDER E:/githome/opencv/opencv_contrib3/modules)
+
 set(OPENCV_LIB opencv_aruco344d.lib
 	opencv_bgsegm344d.lib
 	opencv_bioinspired344d.lib
@@ -47,54 +50,54 @@ set(OPENCV_LIB opencv_aruco344d.lib
 	opencv_xphoto344d.lib)
 	
 set (OPENCV_INCLUDE 
-	E:/githome/opencv/opencv3_4/build
-	E:/githome/opencv/opencv3_4/include
-	E:/githome/opencv/opencv3_4/include/opencv
-	E:/githome/opencv/opencv3_4/modules/core/include
-	E:/githome/opencv/opencv3_4/modules/flann/include
-	E:/githome/opencv/opencv3_4/modules/imgproc/include
-	E:/githome/opencv/opencv3_4/modules/ml/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/phase_unwrapping/include
-	E:/githome/opencv/opencv3_4/modules/photo/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/plot/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/reg/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/surface_matching/include
-	E:/githome/opencv/opencv3_4/modules/video/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/xphoto/include
-	E:/githome/opencv/opencv3_4/modules/dnn/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/fuzzy/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/hfs/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/img_hash/include
-	E:/githome/opencv/opencv3_4/modules/imgcodecs/include
-	E:/githome/opencv/opencv3_4/modules/shape/include
-	E:/githome/opencv/opencv3_4/modules/videoio/include
-	E:/githome/opencv/opencv3_4/modules/highgui/include
-	E:/githome/opencv/opencv3_4/modules/superres/include
-	E:/githome/opencv/opencv3_4/modules/ts/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/bioinspired/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/dnn_objdetect/include
-	E:/githome/opencv/opencv3_4/modules/features2d/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/line_descriptor/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/saliency/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/text/include
-	E:/githome/opencv/opencv3_4/modules/calib3d/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/ccalib/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/datasets/include
-	E:/githome/opencv/opencv3_4/modules/objdetect/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/rgbd/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/stereo/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/structured_light/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/tracking/include
-	E:/githome/opencv/opencv3_4/modules/videostab/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/xfeatures2d/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/ximgproc/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/xobjdetect/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/aruco/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/bgsegm/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/dpm/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/face/include
-	E:/githome/opencv/opencv_contrib_3_4/modules/optflow/include
-	E:/githome/opencv/opencv3_4/modules/stitching/include)
+	${OPENCV_FOLDER}/build
+	${OPENCV_FOLDER}/include
+	${OPENCV_FOLDER}/include/opencv
+	${OPENCV_FOLDER}/modules/core/include
+	${OPENCV_FOLDER}/modules/flann/include
+	${OPENCV_FOLDER}/modules/imgproc/include
+	${OPENCV_FOLDER}/modules/ml/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/phase_unwrapping/include
+	${OPENCV_FOLDER}/modules/photo/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/plot/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/reg/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/surface_matching/include
+	${OPENCV_FOLDER}/modules/video/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/xphoto/include
+	${OPENCV_FOLDER}/modules/dnn/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/fuzzy/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/hfs/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/img_hash/include
+	${OPENCV_FOLDER}/modules/imgcodecs/include
+	${OPENCV_FOLDER}/modules/shape/include
+	${OPENCV_FOLDER}/modules/videoio/include
+	${OPENCV_FOLDER}/modules/highgui/include
+	${OPENCV_FOLDER}/modules/superres/include
+	${OPENCV_FOLDER}/modules/ts/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/bioinspired/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/dnn_objdetect/include
+	${OPENCV_FOLDER}/modules/features2d/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/line_descriptor/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/saliency/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/text/include
+	${OPENCV_FOLDER}/modules/calib3d/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/ccalib/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/datasets/include
+	${OPENCV_FOLDER}/modules/objdetect/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/rgbd/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/stereo/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/structured_light/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/tracking/include
+	${OPENCV_FOLDER}/modules/videostab/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/xfeatures2d/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/ximgproc/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/xobjdetect/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/aruco/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/bgsegm/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/dpm/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/face/include
+	${OPENCV_EXTRA_MODULE_FOLDER}/optflow/include
+	${OPENCV_FOLDER}/modules/stitching/include)
 	
 project (CVBridgePlugins)
 

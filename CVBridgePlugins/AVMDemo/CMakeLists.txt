@@ -20,7 +20,7 @@ include_directories(.)
 include_directories(${CMAKE_SOURCE_DIR}/Plugin)
 include_directories(${OPENCV_INCLUDE})
 
-link_directories(E:/githome/opencv/opencv3_4/build/lib/Debug)
+link_directories(${OPENCV_FOLDER}/build/lib/Debug)
 link_directories(${CMAKE_BINARY_DIR}/Plugin/Debug)
 
 

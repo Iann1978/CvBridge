@@ -38,7 +38,7 @@ set(SOURCES
 include_directories(.)
 include_directories(${OPENCV_INCLUDE})
 
-link_directories(E:/githome/opencv/opencv3_4/build/lib/Debug)
+link_directories(${OPENCV_FOLDER}/build/lib/Debug)
 
 # predefined macro
 add_definitions(-DGLEW_STATIC)

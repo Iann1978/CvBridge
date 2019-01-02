@@ -49,7 +49,11 @@ void CVProcess_Calibration::Process(Mat** inputs, Mat** outputs)
 	{
 		if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance)
 		{
-			good_matches.push_back(knn_matches[i][0]);
+			if (keypoints_object[knn_matches[i][0].queryIdx].pt.x > 350)
+			{
+				good_matches.push_back(knn_matches[i][0]);
+				break;
+			}
 		}
 	}
 
@@ -67,34 +71,64 @@ void CVProcess_Calibration::Process(Mat** inputs, Mat** outputs)
 		//-- Get the keypoints from the good matches
 		obj.push_back(keypoints_object[good_matches[i].queryIdx].pt);
 		scene.push_back(keypoints_scene[good_matches[i].trainIdx].pt);
+		break;
 	}
 
-	Mat H = findHomography(obj, scene, RANSAC);
+	//Mat H = findHomography(obj, scene, RANSAC);
 
-	//-- Get the corners from the image_1 ( the object to be "detected" )
-	std::vector<Point2f> obj_corners(4);
-	obj_corners[0] = Point2f(0, 0);
-	obj_corners[1] = Point2f((float)img_object.cols, 0);
-	obj_corners[2] = Point2f((float)img_object.cols, (float)img_object.rows);
-	obj_corners[3] = Point2f(0, (float)img_object.rows);
-	std::vector<Point2f> scene_corners(4);
+	////-- Get the corners from the image_1 ( the object to be "detected" )
+	//std::vector<Point2f> obj_corners(4);
+	//obj_corners[0] = Point2f(0, 0);
+	//obj_corners[1] = Point2f((float)img_object.cols, 0);
+	//obj_corners[2] = Point2f((float)img_object.cols, (float)img_object.rows);
+	//obj_corners[3] = Point2f(0, (float)img_object.rows);
+	//std::vector<Point2f> scene_corners(4);
 
-	perspectiveTransform(obj_corners, scene_corners, H);
+	//perspectiveTransform(obj_corners, scene_corners, H);
 
-	//-- Draw lines between the corners (the mapped object in the scene - image_2 )
-	line(img_matches, scene_corners[0] + Point2f((float)img_object.cols, 0),
-		scene_corners[1] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
-	line(img_matches, scene_corners[1] + Point2f((float)img_object.cols, 0),
-		scene_corners[2] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
-	line(img_matches, scene_corners[2] + Point2f((float)img_object.cols, 0),
-		scene_corners[3] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
-	line(img_matches, scene_corners[3] + Point2f((float)img_object.cols, 0),
-		scene_corners[0] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
+	////-- Draw lines between the corners (the mapped object in the scene - image_2 )
+	//line(img_matches, scene_corners[0] + Point2f((float)img_object.cols, 0),
+	//	scene_corners[1] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
+	//line(img_matches, scene_corners[1] + Point2f((float)img_object.cols, 0),
+	//	scene_corners[2] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
+	//line(img_matches, scene_corners[2] + Point2f((float)img_object.cols, 0),
+	//	scene_corners[3] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
+	//line(img_matches, scene_corners[3] + Point2f((float)img_object.cols, 0),
+	//	scene_corners[0] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
 
 	//-- Show detected matches
 	//imshow("Good Matches & Object detection", img_matches);
 	img_matches.copyTo(mat16);
 
+	if (obj.size() > 0 && scene.size() > 0)
+	{
+		Point3f p = Calculate3DPoint(obj[0], scene[0]);
+		floatValues[0] = p.x;
+		floatValues[1] = p.y;
+		floatValues[2] = p.z;
+
+		floatValues[3] = obj[0].x;
+		floatValues[4] = obj[0].y;
+
+		floatValues[5] = scene[0].x;
+		floatValues[6] = scene[0].y;
+
+	}
+	
 	//mat0.copyTo(mat16(Rect(0, 0, 512, 512)));
 	//mat1.copyTo(mat16(Rect(512, 0, 512, 512)));
+}
+
+
+Point3f CVProcess_Calibration::Calculate3DPoint(Point2f pl, Point2f pr)
+{
+	float xxl = (pl.x-256) / 256;
+	float xxr = (pr.x-256) / 256;
+	float yyr = (pr.y-256) / 256;
+	float z = 2 * a / (xxl - xxr);
+	float xr = xxr * z;
+	float x = xr + a;
+	float yr = yyr * z;
+	float y = yr;
+	return Point3f(x, y, z);
 }

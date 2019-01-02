@@ -25,10 +25,16 @@ public class CalibrationApp: MonoBehaviour {
 
     private void Update()
     {
-        Debug.Log(string.Format("Camera Parameter: position:{0:F4},{1:F4},{2:F4}; rotation:{3:F4},{4:F4},{5:F4},{6:F4}"
+        //Debug.Log(string.Format("Camera Parameter: position:{0:F4},{1:F4},{2:F4}; rotation:{3:F4},{4:F4},{5:F4},{6:F4}"
+        //    , CVBridge.GetFloat(0, 0), CVBridge.GetFloat(0, 1), CVBridge.GetFloat(0, 2)
+        //    , CVBridge.GetFloat(0, 3), CVBridge.GetFloat(0, 4), CVBridge.GetFloat(0, 5), CVBridge.GetFloat(0, 6)));
+
+        Debug.Log(string.Format("GoodFuture0: position:{0:F4},{1:F4},{2:F4}, pl:{3:F4},{4:F4}, pr:{5:F4},{6:F4} "
             , CVBridge.GetFloat(0, 0), CVBridge.GetFloat(0, 1), CVBridge.GetFloat(0, 2)
-            , CVBridge.GetFloat(0, 3), CVBridge.GetFloat(0, 4), CVBridge.GetFloat(0, 5), CVBridge.GetFloat(0, 6)));
-        
+            , CVBridge.GetFloat(0, 3), CVBridge.GetFloat(0, 4)
+            , CVBridge.GetFloat(0, 5), CVBridge.GetFloat(0, 6)
+            ));
+
 
 
     }

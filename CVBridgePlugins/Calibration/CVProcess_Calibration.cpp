@@ -49,11 +49,7 @@ void CVProcess_Calibration::Process(Mat** inputs, Mat** outputs)
 	{
 		if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance)
 		{
-			if (keypoints_object[knn_matches[i][0].queryIdx].pt.x > 350)
-			{
-				good_matches.push_back(knn_matches[i][0]);
-				break;
-			}
+			good_matches.push_back(knn_matches[i][0]);
 		}
 	}
 
@@ -65,55 +61,59 @@ void CVProcess_Calibration::Process(Mat** inputs, Mat** outputs)
 	//-- Localize the object
 	std::vector<Point2f> obj;
 	std::vector<Point2f> scene;
+	std::vector<Point3f> world;
 
 	for (size_t i = 0; i < good_matches.size(); i++)
 	{
 		//-- Get the keypoints from the good matches
-		obj.push_back(keypoints_object[good_matches[i].queryIdx].pt);
-		scene.push_back(keypoints_scene[good_matches[i].trainIdx].pt);
-		break;
+		Point2f pl = keypoints_object[good_matches[i].queryIdx].pt;
+		Point2f pr = keypoints_scene[good_matches[i].trainIdx].pt;
+		Point3f pw = Calculate3DPoint(pl, pr);
+		obj.push_back(pl);
+		scene.push_back(pr);
+		world.push_back(pw);
 	}
 
-	//Mat H = findHomography(obj, scene, RANSAC);
+	Mat H = findHomography(obj, scene, RANSAC);
 
-	////-- Get the corners from the image_1 ( the object to be "detected" )
-	//std::vector<Point2f> obj_corners(4);
-	//obj_corners[0] = Point2f(0, 0);
-	//obj_corners[1] = Point2f((float)img_object.cols, 0);
-	//obj_corners[2] = Point2f((float)img_object.cols, (float)img_object.rows);
-	//obj_corners[3] = Point2f(0, (float)img_object.rows);
-	//std::vector<Point2f> scene_corners(4);
+	//-- Get the corners from the image_1 ( the object to be "detected" )
+	std::vector<Point2f> obj_corners(4);
+	obj_corners[0] = Point2f(0, 0);
+	obj_corners[1] = Point2f((float)img_object.cols, 0);
+	obj_corners[2] = Point2f((float)img_object.cols, (float)img_object.rows);
+	obj_corners[3] = Point2f(0, (float)img_object.rows);
+	std::vector<Point2f> scene_corners(4);
 
-	//perspectiveTransform(obj_corners, scene_corners, H);
+	perspectiveTransform(obj_corners, scene_corners, H);
 
-	////-- Draw lines between the corners (the mapped object in the scene - image_2 )
-	//line(img_matches, scene_corners[0] + Point2f((float)img_object.cols, 0),
-	//	scene_corners[1] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
-	//line(img_matches, scene_corners[1] + Point2f((float)img_object.cols, 0),
-	//	scene_corners[2] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
-	//line(img_matches, scene_corners[2] + Point2f((float)img_object.cols, 0),
-	//	scene_corners[3] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
-	//line(img_matches, scene_corners[3] + Point2f((float)img_object.cols, 0),
-	//	scene_corners[0] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
+	//-- Draw lines between the corners (the mapped object in the scene - image_2 )
+	line(img_matches, scene_corners[0] + Point2f((float)img_object.cols, 0),
+		scene_corners[1] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
+	line(img_matches, scene_corners[1] + Point2f((float)img_object.cols, 0),
+		scene_corners[2] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
+	line(img_matches, scene_corners[2] + Point2f((float)img_object.cols, 0),
+		scene_corners[3] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
+	line(img_matches, scene_corners[3] + Point2f((float)img_object.cols, 0),
+		scene_corners[0] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4);
 
 	//-- Show detected matches
 	//imshow("Good Matches & Object detection", img_matches);
 	img_matches.copyTo(mat16);
 
-	if (obj.size() > 0 && scene.size() > 0)
-	{
-		Point3f p = Calculate3DPoint(obj[0], scene[0]);
-		floatValues[0] = p.x;
-		floatValues[1] = p.y;
-		floatValues[2] = p.z;
+	//if (obj.size() > 0 && scene.size() > 0)
+	//{
+	//	Point3f p = Calculate3DPoint(obj[0], scene[0]);
+	//	floatValues[0] = p.x;
+	//	floatValues[1] = p.y;
+	//	floatValues[2] = p.z;
 
-		floatValues[3] = obj[0].x;
-		floatValues[4] = obj[0].y;
+	//	floatValues[3] = obj[0].x;
+	//	floatValues[4] = obj[0].y;
 
-		floatValues[5] = scene[0].x;
-		floatValues[6] = scene[0].y;
+	//	floatValues[5] = scene[0].x;
+	//	floatValues[6] = scene[0].y;
 
-	}
+	//}
 	
 	//mat0.copyTo(mat16(Rect(0, 0, 512, 512)));
 	//mat1.copyTo(mat16(Rect(512, 0, 512, 512)));

@@ -11,6 +11,7 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/features2d.hpp"
 #include "opencv2/xfeatures2d.hpp"
+#include <algorithm>
 
 
 
@@ -47,11 +48,32 @@ void drawMatch(Mat& dest, vector<DMatch> &goodMatch, vector<KeyPoint> &kp0, vect
 
 
 		Scalar color(rand() % 256, rand() % 256, rand() % 256);
-		Point pt0 = Point(key0.pt.x + base0.x, key0.pt.y + base0.y);
-		Point pt1 = Point(key1.pt.x + base1.x, key1.pt.y + base1.y);
+		Point pt0 = Point((int)(key0.pt.x + base0.x), (int)(key0.pt.y + base0.y));
+		Point pt1 = Point((int)(key1.pt.x + base1.x), (int)(key1.pt.y + base1.y));
 		circle(dest, pt0, 1, color);
 		circle(dest, pt1, 1, color);
 		line(dest, pt0, pt1, color);
+	}
+}
+
+void CalculateMatchDatas(vector<DMatch> &goodMatch01, vector<DMatch> &goodMatch02, vector<DMatch> &goodMatch03, vector<MatchData>& matchDatas)
+{
+	for each (DMatch m in goodMatch01)
+	{
+		vector<DMatch>::iterator it2 = std::find_if(goodMatch02.begin(), goodMatch02.end(),
+			[m](const DMatch& x) -> bool { return x.queryIdx == m.queryIdx;  });
+		vector<DMatch>::iterator it3 = std::find_if(goodMatch03.begin(), goodMatch03.end(),
+			[m](const DMatch& x) -> bool { return x.queryIdx == m.queryIdx;  });
+		
+		if (it2 != goodMatch02.end() && it3 != goodMatch03.end())
+		{
+			MatchData matchData;
+			matchData.idx0 = m.queryIdx;
+			matchData.idx1 = m.trainIdx;
+			matchData.idx2 = it2->trainIdx;
+			matchData.idx3 = it3->trainIdx;
+			matchDatas.push_back(matchData);
+		}
 	}
 }
 
@@ -99,6 +121,15 @@ void CVProcess_Calibration::Process(Mat** inputs, Mat** outputs)
 	good_matches02.clear();
 	matcher->knnMatch(descriptors0, descriptors2, knn_matches02, 2);
 	goodMatch(knn_matches02, good_matches02, ratio_thresh);
+
+	knn_matches03.clear();
+	good_matches03.clear();
+	matcher->knnMatch(descriptors0, descriptors3, knn_matches03, 2);
+	goodMatch(knn_matches03, good_matches03, ratio_thresh);
+
+	matchDatas.clear();
+	CalculateMatchDatas(good_matches01, good_matches02, good_matches03, matchDatas);
+	floatValues[0] = (float)matchDatas.size();
 	
 	
 	mat0.copyTo(mat16(Rect(0, 0, 512, 512)));
@@ -109,6 +140,7 @@ void CVProcess_Calibration::Process(Mat** inputs, Mat** outputs)
 
 	drawMatch(mat16, good_matches01, keypoints0, keypoints1, Point(0, 0), Point(512, 0));
 	drawMatch(mat16, good_matches02, keypoints0, keypoints2, Point(0, 0), Point(0, 512));
+	drawMatch(mat16, good_matches03, keypoints0, keypoints3, Point(0, 0), Point(512, 512));
 /*
 	for (int i = 0; i < good_matches01.size(); i++)
 	{

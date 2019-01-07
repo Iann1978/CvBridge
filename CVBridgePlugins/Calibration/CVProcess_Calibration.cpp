@@ -77,6 +77,97 @@ void CalculateMatchDatas(vector<DMatch> &goodMatch01, vector<DMatch> &goodMatch0
 	}
 }
 
+void CVProcess_Calibration::FillMatchData(vector<MatchData>& matchDatas, vector<KeyPoint>& keypoint0, vector<KeyPoint>& keypoint1,
+	vector<KeyPoint>& keypoint2, vector<KeyPoint>& keypoint3)
+{
+	for (int i=0; i<matchDatas.size(); i++)
+	{
+		MatchData &matchData = matchDatas[i];
+		matchData.p0 = keypoint0[matchData.idx0].pt;
+		matchData.p1 = keypoint0[matchData.idx1].pt;
+		matchData.p2 = keypoint0[matchData.idx2].pt;
+		matchData.p3 = keypoint0[matchData.idx3].pt;
+		matchData.pw = Calculate3DPoint(matchData.p0, matchData.p2);
+	}
+}
+
+
+
+void PrepareData(int &m, int&n, float *&M, float*&N, vector<MatchData>& matchDatas)
+{
+	m = matchDatas.size() * 3;
+	n = 16;
+	M = new float[m * n];
+	N = new float[m];
+	memset(M, 0, sizeof(float)*m*n);
+	memset(N, 0, sizeof(float)*m);
+
+	for (int i = 0; i < matchDatas.size(); i++)
+	{
+		MatchData matchData = matchDatas[i];
+		Point3f pw = matchData.pw;
+		Point2f pl = matchData.p2;
+		Point2f pr = matchData.p3;
+		//u*y' = v*x'
+		M[(i * 3 + 0) * n + 0] = pl.y * pw.x;
+		M[(i * 3 + 0) * n + 1] = pl.y * pw.y;
+		M[(i * 3 + 0) * n + 2] = pl.y * pw.z;
+		M[(i * 3 + 0) * n + 3] = pl.y;
+		M[(i * 3 + 0) * n + 4] = -pl.x * pw.x;
+		M[(i * 3 + 0) * n + 5] = -pl.x * pw.y;
+		M[(i * 3 + 0) * n + 6] = -pl.x * pw.z;
+		M[(i * 3 + 0) * n + 7] = -pl.x;
+		N[i * 3 + 0] = 0;
+
+		//u*y' = v*x'
+		M[(i * 3 + 1) * n + 8] = pr.y * pw.x;
+		M[(i * 3 + 1) * n + 9] = pr.y * pw.y;
+		M[(i * 3 + 1) * n + 10] = pr.y * pw.z;
+		M[(i * 3 + 1) * n + 11] = pr.y;
+		M[(i * 3 + 1) * n + 12] = -pr.x * pw.x;
+		M[(i * 3 + 1) * n + 13] = -pr.x * pw.y;
+		M[(i * 3 + 1) * n + 14] = -pr.x * pw.z;
+		M[(i * 3 + 1) * n + 15] = -pr.x;
+		N[i * 3 + 1] = 0;
+
+
+		//xl'-xr'=1
+		M[(i * 3 + 2) * n + 0] = pw.x;
+		M[(i * 3 + 2) * n + 1] = pw.y;
+		M[(i * 3 + 2) * n + 2] = pw.z;
+		M[(i * 3 + 2) * n + 3] = 1;
+		M[(i * 3 + 2) * n + 8] = -pw.x;
+		M[(i * 3 + 2) * n + 9] = -pw.y;
+		M[(i * 3 + 2) * n + 10] = -pw.z;
+		M[(i * 3 + 2) * n + 11] = -1;
+		N[i * 3 + 2] = 1;
+	}
+}
+
+//bool cal_line_equation(float *x, int m, int n, float *M, float *N)
+//{
+//	MatrixXf MM = MatrixXf::Random(m, n);
+//	MatrixXf NN = MatrixXf::Random(m, 1);
+//
+//	for (int r = 0; r < m; r++)
+//	{
+//		NN(r, 0) = N[r];
+//		for (int c = 0; c < n; c++)
+//		{
+//			MM(r, c) = M[r*n + c];
+//		}
+//	}
+//	MatrixXf XX = (MM.transpose() * MM).inverse() * MM.transpose() * NN;
+//	for (int i = 0; i < n; i++)
+//	{
+//		x[i] = XX(i, 0);
+//	}
+//
+//
+//
+//	return true;
+//}
+
 void CVProcess_Calibration::Process(Mat** inputs, Mat** outputs)
 {
 	Mat& mat2 = *cvTextures[0]->mat;
@@ -141,6 +232,18 @@ void CVProcess_Calibration::Process(Mat** inputs, Mat** outputs)
 	drawMatch(mat16, good_matches01, keypoints0, keypoints1, Point(0, 0), Point(512, 0));
 	drawMatch(mat16, good_matches02, keypoints0, keypoints2, Point(0, 0), Point(0, 512));
 	drawMatch(mat16, good_matches03, keypoints0, keypoints3, Point(0, 0), Point(512, 512));
+
+
+	// calculate camera's positioin
+	FillMatchData(matchDatas, keypoints0, keypoints1, keypoints2, keypoints3);
+	int m, n;
+	float *M = nullptr, *N = nullptr;
+	PrepareData(m, n, M, N, matchDatas);
+	delete[] M;
+	delete[] N;
+
+
+
 /*
 	for (int i = 0; i < good_matches01.size(); i++)
 	{

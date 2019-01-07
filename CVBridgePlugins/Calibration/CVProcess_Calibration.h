@@ -19,6 +19,12 @@ struct MatchData
 	int idx1;
 	int idx2;
 	int idx3;
+
+	Point2f p0;
+	Point2f p1;
+	Point2f p2;
+	Point2f p3;
+	Point3f pw;
 };
 
 class CVProcess_Calibration : CVProcess
@@ -29,6 +35,7 @@ public:
 	float a = 0.03f;
 	bool first = true;
 	bool reset = true;
+	
 	int minHessian = 400;
 	Ptr<SURF> detector;
 	Ptr<DescriptorMatcher> matcher;
@@ -45,5 +52,7 @@ public:
 
 	Point3f Calculate3DPoint(Point2f pl, Point2f pr);
 	float CalculateZValue(float ul, float ur);
+	void FillMatchData(vector<MatchData>& matchDatas, vector<KeyPoint>& keypoint0, vector<KeyPoint>& keypoint1,
+		vector<KeyPoint>& keypoint2, vector<KeyPoint>& keypoint3);
 	
 };

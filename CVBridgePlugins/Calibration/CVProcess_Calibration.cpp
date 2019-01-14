@@ -12,7 +12,7 @@
 #include "opencv2/features2d.hpp"
 #include "opencv2/xfeatures2d.hpp"
 #include <algorithm>
-
+#include <Eigen/Dense>
 
 
 extern "C"
@@ -25,6 +25,7 @@ extern "C"
 
 using namespace cv;
 using namespace cv::xfeatures2d;
+using namespace Eigen;
 using std::vector;
 
 void goodMatch(vector< vector<DMatch> > &match, vector<DMatch> &goodMatch, float ratio_thresh)
@@ -84,30 +85,32 @@ void CVProcess_Calibration::FillMatchData(vector<MatchData>& matchDatas, vector<
 	{
 		MatchData &matchData = matchDatas[i];
 		matchData.p0 = keypoint0[matchData.idx0].pt;
-		matchData.p1 = keypoint0[matchData.idx1].pt;
-		matchData.p2 = keypoint0[matchData.idx2].pt;
-		matchData.p3 = keypoint0[matchData.idx3].pt;
-		matchData.pw = Calculate3DPoint(matchData.p0, matchData.p2);
+		matchData.p1 = keypoint1[matchData.idx1].pt;
+		matchData.p2 = keypoint2[matchData.idx2].pt;
+		matchData.p3 = keypoint3[matchData.idx3].pt;
+		matchData.pw = Calculate3DPoint(matchData.p0, matchData.p1);
 	}
 }
 
 
 
-void PrepareData(int &m, int&n, float *&M, float*&N, vector<MatchData>& matchDatas)
+void PrepareData(int &m, int&n, float *&M, float*&N, float*&X, vector<MatchData>& matchDatas)
 {
 	m = matchDatas.size() * 3;
 	n = 16;
 	M = new float[m * n];
 	N = new float[m];
+	X = new float[n];
 	memset(M, 0, sizeof(float)*m*n);
 	memset(N, 0, sizeof(float)*m);
+	memset(X, 0, sizeof(float)*n);
 
 	for (int i = 0; i < matchDatas.size(); i++)
 	{
 		MatchData matchData = matchDatas[i];
 		Point3f pw = matchData.pw;
-		Point2f pl = matchData.p2;
-		Point2f pr = matchData.p3;
+		Point2f pl = (matchData.p0 - Point2f(256, 256))/256.0f;
+		Point2f pr = (matchData.p1 - Point2f(256, 256))/256.0f;
 		//u*y' = v*x'
 		M[(i * 3 + 0) * n + 0] = pl.y * pw.x;
 		M[(i * 3 + 0) * n + 1] = pl.y * pw.y;
@@ -144,29 +147,29 @@ void PrepareData(int &m, int&n, float *&M, float*&N, vector<MatchData>& matchDat
 	}
 }
 
-//bool cal_line_equation(float *x, int m, int n, float *M, float *N)
-//{
-//	MatrixXf MM = MatrixXf::Random(m, n);
-//	MatrixXf NN = MatrixXf::Random(m, 1);
-//
-//	for (int r = 0; r < m; r++)
-//	{
-//		NN(r, 0) = N[r];
-//		for (int c = 0; c < n; c++)
-//		{
-//			MM(r, c) = M[r*n + c];
-//		}
-//	}
-//	MatrixXf XX = (MM.transpose() * MM).inverse() * MM.transpose() * NN;
-//	for (int i = 0; i < n; i++)
-//	{
-//		x[i] = XX(i, 0);
-//	}
-//
-//
-//
-//	return true;
-//}
+bool cal_line_equation(float *x, int m, int n, float *M, float *N)
+{
+	MatrixXf MM = MatrixXf::Random(m, n);
+	MatrixXf NN = MatrixXf::Random(m, 1);
+
+	for (int r = 0; r < m; r++)
+	{
+		NN(r, 0) = N[r];
+		for (int c = 0; c < n; c++)
+		{
+			MM(r, c) = M[r*n + c];
+		}
+	}
+	MatrixXf XX = (MM.transpose() * MM).inverse() * MM.transpose() * NN;
+	for (int i = 0; i < n; i++)
+	{
+		x[i] = XX(i, 0);
+	}
+
+
+
+	return true;
+}
 
 void CVProcess_Calibration::Process(Mat** inputs, Mat** outputs)
 {
@@ -237,10 +240,16 @@ void CVProcess_Calibration::Process(Mat** inputs, Mat** outputs)
 	// calculate camera's positioin
 	FillMatchData(matchDatas, keypoints0, keypoints1, keypoints2, keypoints3);
 	int m, n;
-	float *M = nullptr, *N = nullptr;
-	PrepareData(m, n, M, N, matchDatas);
+	float *M = nullptr, *N = nullptr, *X = nullptr;
+	PrepareData(m, n, M, N, X, matchDatas);
+	cal_line_equation(X, m, n, M, N);
+	for (int i = 0; i < n; i++)
+	{
+		floatValues[i] = X[i];
+	}
 	delete[] M;
 	delete[] N;
+	delete[] X;
 
 
 

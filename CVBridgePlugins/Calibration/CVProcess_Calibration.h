@@ -32,7 +32,7 @@ class CVProcess_Calibration : CVProcess
 public:
 	virtual void Process(Mat** inputs, Mat** outputs) override;
 
-	float a = 0.03f;
+	float a = 0.5f;
 	bool first = true;
 	bool reset = true;
 	
